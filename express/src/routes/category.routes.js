@@ -5,23 +5,25 @@ import {
   getById,
   remove,
   update,
-} from "../controllers/user.controller.js";
+} from "../controllers/category.controller.js";
 
 const router = express.Router();
 
-//! CRUD users
-//* get all users
+// CRUD categories
+
+// get all categories
 router.get("/", getAll);
- // getting by the id 
+
+// get by id
 router.get("/:id", getById);
 
-//* create
+// create
 router.post("/", create);
 
-//* update
+// update
 router.put("/:id", update);
 
-//* delete
+// delete
 router.delete("/:id", remove);
 
 export default router;

@@ -1,5 +1,3 @@
-// routes/product.routes.js
-
 import express from "express";
 import {
   create,
@@ -11,21 +9,27 @@ import {
 
 const router = express.Router();
 
-// CRUD products
+const middle = (req,res,next) =>{
+  console.log("get all products mid");
+  next();
+}
 
-// get all products
+
+//! crud products
+//* get all products
+
 router.get("/", getAll);
 
-// get by id
+//* get by id
 router.get("/:id", getById);
 
-// create
+//* create
 router.post("/products", create);
 
-// update
+//* update
 router.put("/:id", update);
 
-// delete
+//* delete
 router.delete("/:id", remove);
 
 export default router;
