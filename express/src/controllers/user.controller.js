@@ -1,30 +1,65 @@
+import mongoose from "mongoose";
+
 const users = [];
 
-export const getAll = (req, res) => {
-  const query = req.query;
+//! user schema
+const userSchema = new  mongoose.Schema(
+  {
+    name: {
+      type : String, 
+      required : true , 
+      minLength : 3 , 
+
+    }, 
+    email:{
+      type: String , 
+      required : true , 
+      unique : true , 
+    }, 
+    password : {
+      type : String , 
+      required : true
+    },
+  },
+   {timestamps:true})
+//! creating user model 
+
+
+const User = mongoose.model("user", userSchema);
+
+export const getAll = (req, res, next) => {
+ try{
+   const query = req.query;
   console.log(query);
 
+  //* database find all query 
+  const users = await User.find({})
   res.status(200).json({
     message: "users fetched",
     success: true,
-    data: users,
+    data: user,
   });
+ } 
+ catch(error){
+  next(error)
+ }
 };
 
 // defining the getById
 
 export const getById = (req, res, next) => {
+  try {
+  
   // const id = req.params.id;
   const { id } = req.params;
 
-  const user = users.find((user) => user._id === Number(id));
+  // const user = users.find((user) => user._id === Number(id));
+
+  const user = await User.findOne({_id:id});
+
 
   if (!user) {
-    // res.status(404).json({
-    //   message: "user not found",
-    //   success: false,
-    //   data: null,
-    // });
+    
     next({
       message: "user not found",
       status:404, 
@@ -36,7 +71,10 @@ export const getById = (req, res, next) => {
     message: `user by id ${id} fetched`,
     success: true,
     data: user,
-  });
+  });}
+  catch (error){
+    next(error)
+  }
 };
 
 //* create
@@ -67,7 +105,7 @@ export const update = (req, res) => {
   const { name, email, password } = req.body;
 
   const index = users.findIndex((user) => user._id === Number(id));
-
+  // User.finByIdAndUpdate({_id:id}, {name,email,password}, {new:true})
   if (index === -1) {
     res.status(404).json({
       message: "user not found",

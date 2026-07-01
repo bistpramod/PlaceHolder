@@ -2,6 +2,7 @@ import http from "http";
 import express from "express";
 import userRoutes from "./routes/user.routes.js";
 import productRoutes from "./routes/product.routes.js";
+import { connectDatabase } from "./config/db.config.js";
 
 //* creating express app instance
 const app = express();
@@ -9,43 +10,46 @@ const app = express();
 //* creating http server
 const server = http.createServer(app);
 
-const middleware = (req,res,next) => {
-  console.log('middleware 1 ');
-  next();           
-}
+ // connecting the database 
+ connectDatabase();
+
+ 
+const middleware = (req, res, next) => {
+  console.log("middleware 1 ");
+  next();
+};
 
 //! using middleware
-app.use((req,res,next)=>{
-  console.log("middleware 2")
-  req.user ={
-    name:"David Bowie"
-  }
-  next()
-})
- app.use ((req,res,next)=>{
-  console.log("midd3")
-  console.log(req.user)
+app.use((req, res, next) => {
+  console.log("middleware 2");
+  req.user = {
+    name: "David Bowie",
+  };
+  next();
+});
+app.use((req, res, next) => {
+  console.log("midd3");
+  console.log(req.user);
   // res.status(200).json({
   //   message: "Response from mid 3",
   // });
 
-  if(req.user){
+  if (req.user) {
     next();
-  }
-  else{
+  } else {
     res.status(401).json({
-      message: "unauthorized access denied"
+      message: "unauthorized access denied",
     });
   }
   // next()
- })
-
+});
 
 app.use(middleware);
 
-app.use(express.json()); 
+app.use(express.json());
 
-
+//! Connect to Database
+connectDatabase();
 
 // app.get(path, handler);
 app.get("/", (req, res) => {
@@ -65,14 +69,14 @@ server.listen(8080, () => {
   console.log("press ctrl+c to close the server");
 });
 
-app.use((err,reqres,next)=>{
+app.use((err, reqres, next) => {
   // console.log("error handler");
-  console.log(err)
+  console.log(err);
   res.status(er?.statusCode ?? 500).json({
     message: err?.message ?? "something went wrong",
-    success :false,
-    data : null,
-  })
+    success: false,
+    data: null,
+  });
 });
 
 //? expressJs  / nestjs ->
@@ -131,24 +135,26 @@ app.use((err,reqres,next)=>{
 
 //* middleware
 
-// is sa dunciton execute btween req-res cycle 
-// has the access to req obj ,and next function 
-// can execute on own logic 
-// can modify req and res object 
-// cna endreq-res cycle 
+// is sa dunciton execute btween req-res cycle
+// has the access to req obj ,and next function
+// can execute on own logic
+// can modify req and res object
+// cna endreq-res cycle
 
-
-//*types of middleware 
-//! custom middlewares 
-//? 1 application level 
+//*types of middleware
+//! custom middlewares
+//? 1 application level
 // ? 2 route level middleware
 //? 3 error handler middleware : (err,req,res,next)=>{}
 
-//*third party middleware  
-
-
+//*third party middleware
 
 // mongodb tomorrow
 
-
 //* mongodb
+
+// noSql
+//database --> database
+// table --> collection
+// column  -- > field
+// row  --> document
